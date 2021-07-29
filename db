@@ -1,0 +1,18 @@
+{
+    "name" : "React.js Course",
+    "price": 500,
+    "hours" : 100
+}
+
+{
+    "name" : "Flutter Course",
+    "price": 800,
+    "hours" : 60
+}
+
+
+{
+    "name" : "web dev",
+    "price": 2000,
+    "hours" : 3,
+}
