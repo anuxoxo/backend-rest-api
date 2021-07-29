@@ -3,14 +3,14 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 
-// --------------------------- Connect to Local mongoDB ------------------------------------
-// mongoose.connect('mongodb://localhost:27017/courseDB', { useNewUrlParser: true, useUnifiedTopology: true });
+// ------------------- Connect to Local mongoDB -----------------
+mongoose.connect('mongodb://localhost:27017/courseDB', { useNewUrlParser: true, useUnifiedTopology: true });
 
-// const db = mongoose.connection;
-// db.on('error', console.error.bind(console, 'connection error:'));
-// db.once('open', function () {
-//     console.log('Successfully connected to database');
-// });
+const db = mongoose.connection;
+db.on('error', console.error.bind(console, 'connection error:'));
+db.once('open', function () {
+    console.log('Successfully connected to database');
+});
 
 mongoose.set('useNewUrlParser', true);
 mongoose.set('useFindAndModify', false);
@@ -22,16 +22,6 @@ var PORT = process.env.PORT;
 if (PORT == "" || PORT == null) {
     PORT = 5000;
 }
-
-// ---------------------- For connecting to MongoDB Cluster ------------------
-
-mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true });
-mongoose.connection.on('connected', () => {
-    console.log("Connected to Mongo");
-});
-mongoose.connection.on('error', (err) => {
-    console.log("error to MongoDB", err);
-});
 
 app.use(bodyParser.urlencoded({
     extended: true
@@ -82,7 +72,8 @@ app.route('/')
 
 app.route('/:name')
     .get((req, res) => {
-        Course.findOne({ name: req.params.name }, (err, course) => {
+        const requestedName = req.params.name;
+        Course.findOne({ name: new RegExp(`^${requestedName}$`, 'i') }, (err, course) => {
             if (course) res.send(course);
             else res.send("Course not found!");
         });
